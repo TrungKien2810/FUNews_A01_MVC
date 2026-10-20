@@ -351,6 +351,59 @@ b {
   order: 3;
 }
 
+/* The menu button only exists below the width where the nav fits on one line. Without
+   scripting the nav is simply the wrapped list it always was — the button stays hidden,
+   because a control that does nothing is worse than no control. */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  gap: var(--space-8);
+  margin-left: auto;
+  padding: var(--space-8) var(--space-12);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nav-toggle__bars {
+  width: 1rem;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 -5px 0 currentColor, 0 5px 0 currentColor;
+}
+
+@media (max-width: 61.99rem) {
+  html.js .nav-toggle {
+    display: inline-flex;
+  }
+
+  html.js .masthead__nav {
+    display: none;
+  }
+
+  html.js .masthead__nav[data-nav-open="true"] {
+    display: block;
+  }
+
+  /* Open: one full-width row per destination, which is what a thumb can hit. */
+  html.js .masthead__nav[data-nav-open="true"] .nav-list {
+    display: grid;
+    gap: 0;
+    padding-bottom: var(--space-8);
+  }
+
+  html.js .masthead__nav[data-nav-open="true"] .nav-list a {
+    display: block;
+    padding-block: var(--space-12);
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+  }
+}
+
 @media (min-width: 62rem) {
   .masthead__nav {
     flex: 1 1 auto;

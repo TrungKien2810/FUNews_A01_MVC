@@ -28,6 +28,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>@(string.IsNullOrEmpty(pageTitle) ? "FUNews — Newsroom desk" : $"{pageTitle} · FUNews")</title>
+    @* Marks the document as script-capable before the first paint, so the mobile menu
+       button and the collapsed nav appear together instead of the nav flashing open. *@
+    <script>document.documentElement.classList.add('js');</script>
     @{
         // Every public page carries its own summary; the desk pages all describe themselves
         // the same way, since they are behind a login and never meant to be shared.
@@ -58,7 +61,12 @@
                 <span class="masthead__kicker">Newsroom desk</span>
             </a>
 
-            <nav class="masthead__nav" aria-label="Main">
+            <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" data-nav-toggle>
+                <span class="nav-toggle__bars" aria-hidden="true"></span>
+                <span>Menu</span>
+            </button>
+
+            <nav id="site-nav" class="masthead__nav" aria-label="Main">
                 <ul class="nav-list">
                     <li>
                         <a asp-controller="News" asp-action="Index" aria-current="@Current("News", "Index")">News</a>

@@ -190,6 +190,33 @@
     });
 })(jQuery);
 
+/* Mobile menu
+   ---------------------------------------------------------------------------
+   Below 62rem the nav collapses behind one button, so the masthead is a single
+   row instead of three. The button carries `aria-expanded`; the nav is a real
+   <nav> element either way, and with scripting off it stays visible. */
+(function () {
+    const toggle = document.querySelector('[data-nav-toggle]');
+    const nav = document.getElementById('site-nav');
+    if (!toggle || !nav) return;
+
+    function setOpen(open) {
+        toggle.setAttribute('aria-expanded', String(open));
+        nav.setAttribute('data-nav-open', String(open));
+    }
+
+    toggle.addEventListener('click', function () {
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+})();
+
 /* Copy link
    ---------------------------------------------------------------------------
    The article's "Copy link" button. Progressive enhancement: without JS the
