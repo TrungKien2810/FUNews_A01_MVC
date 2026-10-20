@@ -39,7 +39,7 @@
             <time datetime="@published.Value.ToString("o")">@publishedLabel</time>
         }
         <span>@minutes min read</span>
-        @if (article.ModifiedDate.HasValue)
+        @if (article.ModifiedDate.HasValue && article.ModifiedDate != published)
         {
             <span>Updated @article.ModifiedDate.Value.ToString("dd MMM yyyy, HH:mm")</span>
         }
