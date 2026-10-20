@@ -84,12 +84,18 @@ Checked by running the app against a real `FUNewsManagement` database on SQL Ser
 
 - **Public newsroom, checked in an automated browser pass:** the news list, an article
   page and the popup flows render at 375 / 768 / 1440 px and in both themes with no
-  horizontal overflow, no console errors and no squeezed block. An axe-core scan of the
-  news list and an article page reports **no violations** and no focusable element
-  without a visible focus indicator (36 and 15 focusable elements respectively).
+  horizontal overflow, no console errors and no squeezed block. axe-core reports **no
+  violations** and no focusable element without a visible focus indicator in either theme
+  (news list, article page and the staff ledger: 45, 19 and 33 focusable elements in dark).
+- **Below 768px the staff ledger becomes labelled records** with View / Edit / Delete on
+  their own row — the eight-column table hid those buttons off-screen on a phone.
+- **Served as a production app:** `Content-Encoding: br` on HTML and on `/feed.rss`, a
+  one-week cache on static assets, `X-Content-Type-Options` / `Referrer-Policy` /
+  `X-Frame-Options`, and an unknown address answers **404** with a written explanation
+  and the request id.
 - **Responsive layout** at 375 / 768 / 1440 px in both themes — no horizontal page
-  overflow. The news, category and account ledgers are wide by nature and scroll inside
-  their own container; `min-width: 64rem` is what makes them scroll rather than crush.
+  overflow. On a wide screen the news board gets a rail with the sections and their
+  counts; the ledgers scroll inside their own container.
 - **Keyboard:** Tab order starts at the skip link and stays visible throughout; the popup
   opens with `role="dialog"`, `aria-modal="true"` and an accessible name, moves focus to
   its first field, keeps Tab inside, closes on Escape, and returns focus to the button
