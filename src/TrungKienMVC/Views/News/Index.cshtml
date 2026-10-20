@@ -56,6 +56,8 @@
     </div>
 </form>
 
+<div class="newsroom">
+    <div class="newsroom__main">
 @if (lead is null)
 {
     <div class="panel">
@@ -140,3 +142,29 @@ else
         }
     </ul>
 }
+    </div>
+
+    <aside class="newsroom__rail" aria-labelledby="rail-sections">
+        <h2 class="rail__title" id="rail-sections">Sections</h2>
+        <ul class="rail__list">
+            @foreach (var c in Model.Categories)
+            {
+                <li>
+                    <a asp-action="Index" asp-route-categoryId="@c.CategoryId">
+                        <span>@c.CategoryName</span>
+                        @if (!isFiltered)
+                        {
+                            <span class="rail__count">@Model.Articles.Count(a => a.CategoryId == c.CategoryId)</span>
+                        }
+                    </a>
+                </li>
+            }
+        </ul>
+
+        <h2 class="rail__title">Follow</h2>
+        <p class="rail__note">
+            <a asp-controller="Feed" asp-action="Index">RSS feed</a> &mdash; every published story,
+            as it goes up.
+        </p>
+    </aside>
+</div>
