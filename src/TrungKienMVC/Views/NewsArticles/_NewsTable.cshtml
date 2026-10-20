@@ -53,16 +53,16 @@ else
                         var headlineAddsNothing = string.Equals(
                             n.Headline?.Trim(), n.NewsTitle?.Trim(), StringComparison.OrdinalIgnoreCase);
                         <tr>
-                            <td class="ledger__id">@n.NewsArticleId</td>
-                            <td>
+                            <td class="ledger__id" data-label="ID">@n.NewsArticleId</td>
+                            <td class="ledger__cell" data-label="Title">
                                 <span class="ledger__title">@n.NewsTitle</span>
                                 @if (!headlineAddsNothing)
                                 {
                                     <span class="ledger__sub text-truncate-2">@n.Headline</span>
                                 }
                             </td>
-                            <td class="is-tight">@(n.Category?.CategoryName ?? "—")</td>
-                            <td>
+                            <td class="is-tight" data-label="Category">@(n.Category?.CategoryName ?? "—")</td>
+                            <td data-label="Tags">
                                 @if (n.Tags.Any())
                                 {
                                     <ul class="chip-list">
@@ -77,10 +77,10 @@ else
                                     <span class="subtle">&mdash;</span>
                                 }
                             </td>
-                            <td class="ledger__date">@n.CreatedDate?.ToString("dd/MM/yyyy")</td>
-                            <td class="is-tight">@(n.CreatedBy?.AccountName ?? "—")</td>
-                            <td class="is-tight"><partial name="_StatusBadge" model="n.NewsStatus" /></td>
-                            <td>
+                            <td class="ledger__date" data-label="Created">@n.CreatedDate?.ToString("dd MMM yyyy")</td>
+                            <td class="is-tight" data-label="Author">@(n.CreatedBy?.AccountName ?? "—")</td>
+                            <td class="is-tight" data-label="Status"><partial name="_StatusBadge" model="n.NewsStatus" /></td>
+                            <td class="ledger__cell--actions" data-label="Actions">
                                 <div class="ledger__actions">
                                     <button type="button" class="btn btn-outline-secondary btn-sm"
                                             data-modal-url="@Url.Action("Details", "NewsArticles", new { id = n.NewsArticleId })">View</button>
