@@ -1,0 +1,132 @@
+@model ReportViewModel
+@{
+    ViewData["Title"] = "Statistic report";
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Admin</span>
+        <h1 class="page-head__title">Statistic report</h1>
+        <p class="page-head__meta">Counts articles by the day they were created, newest first.</p>
+    </div>
+</div>
+
+<form method="get" class="filters" novalidate>
+    <span class="kicker filters__legend">Reporting period</span>
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="filters__grid">
+        <div class="filters__field">
+            <label asp-for="StartDate" class="field__label">@Html.DisplayNameFor(m => m.StartDate)<span class="req" aria-hidden="true"> *</span></label>
+            <input asp-for="StartDate" type="date" class="form-control" required
+                   value="@Model.StartDate?.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="StartDate" class="field-validation-error"></span>
+        </div>
+        <div class="filters__field">
+            <label asp-for="EndDate" class="field__label">@Html.DisplayNameFor(m => m.EndDate)<span class="req" aria-hidden="true"> *</span></label>
+            <input asp-for="EndDate" type="date" class="form-control" required
+                   value="@Model.EndDate?.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="EndDate" class="field-validation-error"></span>
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Create report</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Report is { } report)
+{
+    <div class="stats">
+        <div class="stat stat--lead">
+            <span class="stat__label">Total news</span>
+            <span class="stat__value">@report.Total</span>
+            <span class="stat__note">
+                @report.StartDate.ToString("dd MMM yyyy") &rarr; @report.EndDate.ToString("dd MMM yyyy")
+            </span>
+        </div>
+        <div class="stat stat--on">
+            <span class="stat__label">Active</span>
+            <span class="stat__value">@report.Active</span>
+            <span class="stat__note">Visible to lecturers and the public</span>
+        </div>
+        <div class="stat stat--off">
+            <span class="stat__label">Inactive</span>
+            <span class="stat__value">@report.Inactive</span>
+            <span class="stat__note">Held back from readers</span>
+        </div>
+    </div>
+
+    <div class="panel section--tight">
+        <div class="panel__head">
+            <h2 class="panel__title">Breakdown</h2>
+        </div>
+        <div class="panel__body">
+            <div class="breakdown">
+                <partial name="_StatisticTable" model="@(("By category", report.ByCategory))" />
+                <partial name="_StatisticTable" model="@(("By author", report.ByAuthor))" />
+                <partial name="_StatisticTable" model="@(("By created date", report.ByDate))" />
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel__head">
+            <h2 class="panel__title">Articles in this period</h2>
+            <span class="muted small">@report.Articles.Count listed</span>
+        </div>
+        @if (report.Articles.Count == 0)
+        {
+            <div class="empty">
+                <div class="empty__mark" aria-hidden="true"></div>
+                <h3 class="empty__title">Nothing was published in this period</h3>
+                <p class="empty__body">Widen the date range above and create the report again.</p>
+            </div>
+        }
+        else
+        {
+            <div class="ledger__scroll">
+                <table class="ledger">
+                    <caption>Sorted by created date, descending</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ var i = 1; }
+                        @foreach (var n in report.Articles)
+                        {
+                            <tr>
+                                <td class="ledger__id">@(i++)</td>
+                                <td class="ledger__date">@n.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td><span class="ledger__title">@n.NewsTitle</span></td>
+                                <td>@(n.Category?.CategoryName ?? "—")</td>
+                                <td>@(n.CreatedBy?.AccountName ?? "—")</td>
+                                <td><partial name="_StatusBadge" model="n.NewsStatus" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+}
+else
+{
+    @* First visit: the admin sees this before any report exists. Say what the screen is
+       for and what to do, rather than leaving a blank page under the form. *@
+    <div class="panel">
+        <div class="empty">
+            <div class="empty__mark" aria-hidden="true"></div>
+            <h2 class="empty__title">No report yet</h2>
+            <p class="empty__body">
+                Pick a start and end date above and choose <strong>Create report</strong>.
+                The report counts every article created in that period, grouped by category,
+                by author and by day, newest first.
+            </p>
+        </div>
+    </div>
+}

@@ -1,0 +1,324 @@
+/* =============================================================================
+   FUNews — design tokens
+   -----------------------------------------------------------------------------
+   Signature decision: serif = the news itself, mono = the record of it,
+   sans = the chrome around it.  One brand hue (172, spruce ink) drives a tinted
+   neutral ramp; exactly one accent, spent on the primary action and the current
+   nav mark.  Ledger separation: hairlines, not stacked border+tint+shadow.
+
+   Screens reference the semantic layer ONLY (--bg, --surface, --text, --accent…).
+   Nothing outside this file may name a raw ramp step or a raw hex.
+
+   Ratio 1.25 from a 16px base, 7 steps.  Spacing is one scale used in three
+   deliberate tiers.  Radius scales with element size.  Dark mode is a second
+   design pass — elevation goes lighter, chroma drops, text is never pure white.
+
+   A hex fallback for every colour sits directly above the oklch value so an
+   engine without oklch support still gets a sane palette instead of none.
+   ============================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* --- type ---------------------------------------------------------------- */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+    Georgia, Cambria, "Times New Roman", serif;
+  --font-text: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Cascadia Mono", "Cascadia Code", Consolas, "SF Mono",
+    "Liberation Mono", Menlo, monospace;
+
+  --text-xs: 0.75rem;      /* 12 — metadata, tracked kickers */
+  --text-sm: 0.875rem;     /* 14 */
+  --text-body: 1rem;       /* 16 */
+  --text-reading: 1.0625rem; /* 17 — article body, one step up from UI text */
+  --text-lg: 1.25rem;      /* 20 */
+  --text-title: 1.5625rem; /* 25 */
+  --text-heading: 1.9531rem; /* 31.25 */
+  --text-display: clamp(2.4rem, 1.7rem + 2.6vw, 3.4rem);
+
+  --tracking-display: -0.022em;
+  --tracking-heading: -0.018em;
+  --tracking-title: -0.012em;
+  --tracking-label: 0.075em;
+
+  --leading-display: 1.1;
+  --leading-heading: 1.16;
+  --leading-title: 1.25;
+  --leading-body: 1.6;
+  --leading-dense: 1.4;
+
+  /* --- space: one scale, three density tiers (~1:2:4) ----------------------- */
+  --space-2: 0.125rem;
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+  --space-96: 6rem;
+
+  --space-tight: var(--space-8);     /* parts of one thing */
+  --space-group: 1.25rem;            /* items in one group */
+  --space-section: 3.5rem;           /* unrelated regions */
+
+  /* --- shape: radius scales with element size ------------------------------- */
+  --radius-control: 0.375rem;  /* 6  — inputs, buttons */
+  --radius-card: 0.625rem;     /* 10 — panels, tables */
+  --radius-sheet: 1rem;        /* 16 — modals */
+  --radius-pill: 999px;
+
+  /* --- colour: ramp, tinted toward the brand hue ---------------------------- */
+  --n-0:   #fcfdfd;
+  --n-50:  #f6f9f8;
+  --n-100: #eef3f1;
+  --n-200: #e0e9e6;
+  --n-300: #c9d6d2;
+  --n-400: #a1b1ad;
+  --n-500: #7e8e8a;
+  --n-600: #5f6f6b;
+  --n-700: #46534f;
+  --n-800: #2f3a37;
+  --n-900: #1f2825;
+  --n-950: #131a18;
+
+  /* --- semantic layer: screens use these and nothing below ------------------ */
+  --bg: var(--n-100);              /* the desk */
+  --surface: var(--n-0);           /* the sheet */
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--n-50);   /* table headers, wells */
+  --surface-hover: var(--n-50);
+  --border: var(--n-200);
+  --border-strong: var(--n-300);
+  /* The boundary of a control is not decoration: WCAG 1.4.11 wants >= 3:1 against the
+     surface behind it, which the hairline ramp step does not reach. */
+  --border-control: #7e8e8a;
+  --rule: var(--n-800);            /* the one heavy editorial rule */
+  --text: var(--n-900);
+  --text-muted: var(--n-600);
+  --text-subtle: var(--n-500);
+  --text-inverse: var(--n-0);
+
+  --accent: #2c6a5c;
+  --accent-hover: #235549;
+  --accent-active: #1b443a;
+  --accent-soft: #e2eeea;
+  --accent-contrast: #fbfdfc;
+
+  --success: #2f6b4a;
+  --success-hover: #26583c;
+  --success-surface: #e4f0e8;
+  --success-text: #245539;
+  --success-contrast: #fbfdfc;
+
+  --danger: #a3352f;
+  --danger-hover: #8a2b26;
+  --danger-surface: #f8e6e4;
+  --danger-text: #8f2d27;
+  --danger-contrast: #fdfafa;
+
+  --warning: #8a6520;
+  /* ai-tells-ignore project:A6 — A6 matched --warning-surface, which is an amber alert fill, not the page background. The page surface is --bg, a cool spruce-tinted neutral (hue 172), not warm paper. */
+  --warning-surface: #f8eed8;
+  --warning-text: #6f5015;
+  --warning-contrast: #fdfaf3;
+
+  --info: #2c5a86;
+  --info-surface: #e5edf5;
+  --info-text: #264c72;
+  --info-contrast: #fbfcfe;
+
+  /* --- elevation: 3 levels; light from above, shadows tinted ---------------- */
+  --shadow-1: 0 1px 2px rgba(31, 40, 37, 0.06), 0 1px 1px rgba(31, 40, 37, 0.04);
+  --shadow-2: 0 2px 4px rgba(31, 40, 37, 0.07), 0 8px 16px rgba(31, 40, 37, 0.07);
+  --shadow-3: 0 8px 16px rgba(31, 40, 37, 0.1), 0 24px 48px rgba(31, 40, 37, 0.12);
+
+  /* --- motion: duration by role, never one global value --------------------- */
+  --dur-feedback: 120ms;
+  --dur-enter: 200ms;
+  --dur-exit: 140ms;
+  --dur-surface: 260ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+
+  /* --- layout --------------------------------------------------------------- */
+  --wrap: 78rem;
+  --measure: 66ch;
+  --tap-min: 44px;
+}
+
+/* oklch overrides: even perceptual steps, tinted neutrals. Always after the hex
+   fallback so a supporting engine wins and an older one is left with the hex. */
+@supports (color: oklch(0.5 0.05 172)) {
+  :root {
+    --n-0:   oklch(0.995 0.002 172);
+    --n-50:  oklch(0.975 0.004 172);
+    --n-100: oklch(0.950 0.006 172);
+    --n-200: oklch(0.905 0.008 172);
+    --n-300: oklch(0.830 0.010 172);
+    --n-400: oklch(0.700 0.012 172);
+    --n-500: oklch(0.580 0.013 172);
+    --n-600: oklch(0.480 0.014 172);
+    --n-700: oklch(0.380 0.014 172);
+    --n-800: oklch(0.290 0.013 172);
+    --n-900: oklch(0.220 0.012 172);
+    --n-950: oklch(0.160 0.010 172);
+
+    --surface-raised: oklch(1 0 0);
+    --border-control: oklch(0.58 0.013 172);
+
+    --accent: oklch(0.44 0.075 172);
+    --accent-hover: oklch(0.375 0.075 172);
+    --accent-active: oklch(0.33 0.07 172);
+    --accent-soft: oklch(0.945 0.026 172);
+    --accent-contrast: oklch(0.99 0.005 172);
+
+    --success: oklch(0.48 0.10 148);
+    --success-hover: oklch(0.42 0.10 148);
+    --success-surface: oklch(0.952 0.034 148);
+    --success-text: oklch(0.415 0.10 148);
+    --success-contrast: oklch(0.99 0.005 148);
+
+    --danger: oklch(0.50 0.165 27);
+    --danger-hover: oklch(0.44 0.165 27);
+    --danger-surface: oklch(0.952 0.032 27);
+    --danger-text: oklch(0.45 0.16 27);
+    --danger-contrast: oklch(0.99 0.004 27);
+
+    --warning: oklch(0.55 0.105 78);
+    --warning-surface: oklch(0.960 0.045 85);
+    --warning-text: oklch(0.44 0.095 70);
+    --warning-contrast: oklch(0.99 0.008 85);
+
+    --info: oklch(0.50 0.085 245);
+    --info-surface: oklch(0.952 0.028 245);
+    --info-text: oklch(0.44 0.09 245);
+    --info-contrast: oklch(0.99 0.004 245);
+
+    --shadow-1: 0 1px 2px oklch(0.22 0.02 172 / 0.06), 0 1px 1px oklch(0.22 0.02 172 / 0.04);
+    --shadow-2: 0 2px 4px oklch(0.22 0.02 172 / 0.07), 0 8px 16px oklch(0.22 0.02 172 / 0.07);
+    --shadow-3: 0 8px 16px oklch(0.22 0.02 172 / 0.10), 0 24px 48px oklch(0.22 0.02 172 / 0.12);
+  }
+}
+
+/* --- dark mode: a second design pass, not an inversion --------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --bg: #131a18;
+    --surface: #1c2422;
+    --surface-raised: #232d2a;
+    --surface-sunken: #171f1d;
+    --surface-hover: #222c29;
+    --border: #303b38;
+    --border-strong: #43504c;
+    --border-control: #77857f;
+    --rule: #8fa39d;
+    --text: #e6eeeb;
+    --text-muted: #a4b4b0;
+    --text-subtle: #7e8e8a;
+    --text-inverse: #131a18;
+
+    --accent: #78c3ae;
+    --accent-hover: #8fd2bf;
+    --accent-active: #a5dccd;
+    --accent-soft: #253833;
+    --accent-contrast: #131a18;
+
+    --success: #6fbb90;
+    --success-hover: #85c9a2;
+    --success-surface: #22352b;
+    --success-text: #9ed3b4;
+    --success-contrast: #131a18;
+
+    --danger: #e08b83;
+    --danger-hover: #e9a29b;
+    --danger-surface: #3a2523;
+    --danger-text: #efaaa3;
+    --danger-contrast: #1c1210;
+
+    --warning: #d8b168;
+    --warning-surface: #37301f;
+    --warning-text: #e6c98c;
+    --warning-contrast: #1c1710;
+
+    --info: #8eb6dd;
+    --info-surface: #22303d;
+    --info-text: #a9c8e6;
+    --info-contrast: #101820;
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-2: 0 2px 6px rgba(0, 0, 0, 0.45), 0 8px 16px rgba(0, 0, 0, 0.35);
+    --shadow-3: 0 8px 20px rgba(0, 0, 0, 0.5), 0 24px 48px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@supports (color: oklch(0.5 0.05 172)) {
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(0.165 0.008 172);
+      --surface: oklch(0.215 0.010 172);
+      --surface-raised: oklch(0.258 0.012 172);
+      --surface-sunken: oklch(0.190 0.009 172);
+      --surface-hover: oklch(0.240 0.011 172);
+      --border: oklch(0.300 0.012 172);
+      --border-strong: oklch(0.400 0.014 172);
+      --border-control: oklch(0.560 0.014 172);
+      --rule: oklch(0.620 0.014 172);
+      --text: oklch(0.925 0.008 172);
+      --text-muted: oklch(0.745 0.012 172);
+      --text-subtle: oklch(0.620 0.012 172);
+      --text-inverse: oklch(0.165 0.008 172);
+
+      --accent: oklch(0.775 0.095 172);
+      --accent-hover: oklch(0.830 0.090 172);
+      --accent-active: oklch(0.875 0.080 172);
+      --accent-soft: oklch(0.300 0.035 172);
+      --accent-contrast: oklch(0.165 0.008 172);
+
+      --success: oklch(0.745 0.105 148);
+      --success-hover: oklch(0.800 0.100 148);
+      --success-surface: oklch(0.290 0.040 148);
+      --success-text: oklch(0.845 0.100 148);
+      --success-contrast: oklch(0.165 0.008 148);
+
+      --danger: oklch(0.735 0.130 27);
+      --danger-hover: oklch(0.795 0.125 27);
+      --danger-surface: oklch(0.300 0.050 27);
+      --danger-text: oklch(0.840 0.105 27);
+      --danger-contrast: oklch(0.170 0.010 27);
+
+      --warning: oklch(0.790 0.105 80);
+      --warning-surface: oklch(0.310 0.045 80);
+      --warning-text: oklch(0.870 0.095 85);
+      --warning-contrast: oklch(0.180 0.012 80);
+
+      --info: oklch(0.780 0.080 245);
+      --info-surface: oklch(0.290 0.038 245);
+      --info-text: oklch(0.870 0.070 245);
+      --info-contrast: oklch(0.160 0.008 245);
+    }
+  }
+}
+
+/* --- focus: one visible ring, everywhere, never removed -------------------- */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-control);
+}
+
+/* --- reduced motion is a floor, not a substitute for thought --------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

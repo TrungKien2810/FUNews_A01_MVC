@@ -1,0 +1,35 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Log in";
+}
+<div class="auth">
+    <div class="auth__card">
+        <span class="kicker">FUNewsManagementSystem</span>
+        <h1 class="auth__title">Newsroom desk</h1>
+        <p class="auth__sub">Sign in with your university email and password.</p>
+
+        <form asp-action="Login" method="post" novalidate>
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <div class="field">
+                <label asp-for="Email" class="field__label"></label>
+                <input asp-for="Email" class="form-control" placeholder="name@FUNewsManagement.org"
+                       autocomplete="username" autofocus />
+                <span asp-validation-for="Email" class="field-validation-error"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="Password" class="field__label"></label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="field-validation-error"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Log in</button>
+        </form>
+
+        <div class="auth__alt">
+            <a asp-controller="News" asp-action="Index">Read the news without signing in</a>
+        </div>
+    </div>
+</div>

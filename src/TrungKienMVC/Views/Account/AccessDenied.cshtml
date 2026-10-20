@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Access denied";
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Not permitted</span>
+        <h1 class="page-head__title">Access denied</h1>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel__body">
+        <p>Your account does not have permission for that screen. Admin functions need the admin account; staff functions need a staff account.</p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to my start page</a>
+    </div>
+</div>

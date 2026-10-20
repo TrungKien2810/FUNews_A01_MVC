@@ -1,0 +1,38 @@
+@model SystemAccount
+@{
+    ViewData["Title"] = "My profile";
+    var roleName = AccountRoles.GetRoleName(Model.AccountRole);
+    var roleClass = Model.AccountRole == AccountRoles.Staff ? "role--staff" : "role--lecturer";
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Staff</span>
+        <h1 class="page-head__title">My profile</h1>
+        <p class="page-head__meta">The name and email that sign you in, and the byline on everything you file.</p>
+    </div>
+    <div class="page-head__actions">
+        <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Edit")">Edit profile</button>
+    </div>
+</div>
+
+<div class="panel panel--narrow">
+    <div class="panel__head">
+        <h2 class="panel__title">Account</h2>
+        <span class="role @roleClass">@roleName</span>
+    </div>
+    <div class="panel__body">
+        <dl class="definition">
+            <dt>Account ID</dt>
+            <dd class="mono">@Model.AccountId</dd>
+            <dt>Name</dt>
+            <dd>@Model.AccountName</dd>
+            <dt>Email</dt>
+            <dd class="mono">@Model.AccountEmail</dd>
+            <dt>Role</dt>
+            <dd>@roleName</dd>
+        </dl>
+    </div>
+    <div class="panel__foot">
+        <a class="link-more" asp-controller="NewsArticles" asp-action="History">See my news history</a>
+    </div>
+</div>

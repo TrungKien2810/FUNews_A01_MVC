@@ -1,0 +1,104 @@
+@model AccountIndexViewModel
+@{
+    ViewData["Title"] = "Accounts";
+    var isFiltered = !string.IsNullOrWhiteSpace(Model.Keyword) || Model.Role.HasValue;
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Admin</span>
+        <h1 class="page-head__title">Accounts</h1>
+        <p class="page-head__meta">Staff write and file news; lecturers read it. An account that has filed articles cannot be deleted.</p>
+    </div>
+    <div class="page-head__actions">
+        <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New account</button>
+    </div>
+</div>
+
+<form method="get" class="filters" role="search">
+    <span class="kicker filters__legend">Filter accounts</span>
+    <div class="filters__grid">
+        <div class="filters__field filters__field--wide">
+            <label class="field__label" for="acc-keyword">Search</label>
+            <input id="acc-keyword" type="search" name="keyword" value="@Model.Keyword" class="form-control"
+                   placeholder="Name or email" />
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="acc-role">Role</label>
+            <select id="acc-role" name="role" class="form-select">
+                <option value="">All roles</option>
+                <option value="@AccountRoles.Staff" selected="@(Model.Role == AccountRoles.Staff)">Staff</option>
+                <option value="@AccountRoles.Lecturer" selected="@(Model.Role == AccountRoles.Lecturer)">Lecturer</option>
+            </select>
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (isFiltered)
+            {
+                <a asp-action="Index" class="btn btn-secondary">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
+@if (Model.Accounts.Count == 0)
+{
+    <div class="panel">
+        <div class="empty">
+            <div class="empty__mark" aria-hidden="true"></div>
+            <h2 class="empty__title">@(isFiltered ? "Nothing matches that filter" : "No accounts yet")</h2>
+            <p class="empty__body">
+                @(isFiltered
+                    ? "No account matches this name and role together. Widen the filter above, or reset it to see them all."
+                    : "Create the staff and lecturer accounts people will sign in with. The admin account lives in appsettings.json and is not listed here.")
+            </p>
+            @if (!isFiltered)
+            {
+                <div class="empty__actions">
+                    <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New account</button>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel">
+        <div class="ledger__scroll">
+            <table class="ledger">
+                <caption>@Model.Accounts.Count account@(Model.Accounts.Count == 1 ? "" : "s")</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Role</th>
+                        <th scope="col" class="is-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var a in Model.Accounts)
+                    {
+                        <tr>
+                            <td class="ledger__id">@a.AccountId</td>
+                            <td><span class="ledger__title">@a.AccountName</span></td>
+                            <td class="mono">@a.AccountEmail</td>
+                            <td>
+                                <span class="role @(a.AccountRole == AccountRoles.Staff ? "role--staff" : "role--lecturer")">
+                                    @AccountRoles.GetRoleName(a.AccountRole)
+                                </span>
+                            </td>
+                            <td>
+                                <div class="ledger__actions">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                            data-modal-url="@Url.Action("Edit", new { id = a.AccountId })">Edit</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            data-modal-url="@Url.Action("Delete", new { id = a.AccountId })">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

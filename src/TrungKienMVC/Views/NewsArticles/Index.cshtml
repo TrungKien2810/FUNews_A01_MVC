@@ -1,0 +1,67 @@
+@model NewsIndexViewModel
+@{
+    ViewData["Title"] = "News desk";
+    ViewData["IsFiltered"] = !string.IsNullOrWhiteSpace(Model.Keyword) || Model.CategoryId.HasValue
+        || Model.TagId.HasValue || Model.Status.HasValue;
+    ViewData["EmptyTitle"] = "The desk is empty";
+    ViewData["EmptyBody"] = "Articles you create are listed here, newest first. Open New article to file the first one.";
+    var isFiltered = (bool)ViewData["IsFiltered"]!;
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Staff</span>
+        <h1 class="page-head__title">News desk</h1>
+        <p class="page-head__meta">Write, edit and retire articles, and attach the tags that file them.</p>
+    </div>
+    <div class="page-head__actions">
+        <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New article</button>
+    </div>
+</div>
+
+<form method="get" class="filters" role="search">
+    <span class="kicker filters__legend">Filter the desk</span>
+    <div class="filters__grid">
+        <div class="filters__field filters__field--wide">
+            <label class="field__label" for="desk-keyword">Search</label>
+            <input id="desk-keyword" type="search" name="keyword" value="@Model.Keyword" class="form-control"
+                   placeholder="Title, headline, content or source" />
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="desk-category">Category</label>
+            <select id="desk-category" name="categoryId" class="form-select">
+                <option value="">All categories</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.CategoryId" selected="@(Model.CategoryId == c.CategoryId)">@c.CategoryName</option>
+                }
+            </select>
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="desk-tag">Tag</label>
+            <select id="desk-tag" name="tagId" class="form-select">
+                <option value="">All tags</option>
+                @foreach (var t in Model.Tags)
+                {
+                    <option value="@t.TagId" selected="@(Model.TagId == t.TagId)">@t.TagName</option>
+                }
+            </select>
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="desk-status">Status</label>
+            <select id="desk-status" name="status" class="form-select">
+                <option value="">All statuses</option>
+                <option value="true" selected="@(Model.Status == true)">Active</option>
+                <option value="false" selected="@(Model.Status == false)">Inactive</option>
+            </select>
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (isFiltered)
+            {
+                <a asp-action="Index" class="btn btn-secondary">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
+<partial name="_NewsTable" model="Model.Articles" />

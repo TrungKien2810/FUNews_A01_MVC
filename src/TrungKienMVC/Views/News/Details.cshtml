@@ -1,0 +1,48 @@
+@model NewsArticle
+@{
+    ViewData["Title"] = Model.NewsTitle;
+}
+<nav aria-label="Breadcrumb">
+    <ol class="breadcrumb">
+        <li><a asp-action="Index">News</a></li>
+        <li>@(Model.Category?.CategoryName ?? "Uncategorised")</li>
+    </ol>
+</nav>
+
+<article class="article">
+    <span class="kicker">@(Model.Category?.CategoryName ?? "Uncategorised")</span>
+    <h1 class="article__title">@Model.NewsTitle</h1>
+    @if (!string.Equals(Model.Headline?.Trim(), Model.NewsTitle?.Trim(), StringComparison.OrdinalIgnoreCase))
+    {
+        <p class="article__headline">@Model.Headline</p>
+    }
+
+    <div class="article__meta">
+        <span>By @(Model.CreatedBy?.AccountName ?? "Unknown author")</span>
+        <span>Published @Model.CreatedDate?.ToString("dd MMM yyyy, HH:mm")</span>
+        @if (Model.ModifiedDate.HasValue)
+        {
+            <span>Updated @Model.ModifiedDate.Value.ToString("dd MMM yyyy, HH:mm")</span>
+        }
+        <span>Source: @(string.IsNullOrWhiteSpace(Model.NewsSource) ? "Not stated" : Model.NewsSource)</span>
+    </div>
+
+    <div class="news-content">@Model.NewsContent</div>
+
+    @if (Model.Tags.Any())
+    {
+        <div class="article__tags">
+            <span class="kicker">Filed under</span>
+            <ul class="chip-list">
+                @foreach (var t in Model.Tags)
+                {
+                    <li class="chip">@t.TagName</li>
+                }
+            </ul>
+        </div>
+    }
+</article>
+
+<div class="cluster article__foot">
+    <a class="btn btn-secondary" asp-action="Index">Back to news</a>
+</div>

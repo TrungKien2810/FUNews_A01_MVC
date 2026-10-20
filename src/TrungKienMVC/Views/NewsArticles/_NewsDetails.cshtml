@@ -1,0 +1,42 @@
+@model NewsArticle
+<partial name="_ModalHeader" model="@("Article " + Model.NewsArticleId)" />
+<div class="modal-body">
+    <span class="kicker">@(Model.Category?.CategoryName ?? "Uncategorised")</span>
+    <h3>@Model.NewsTitle</h3>
+    <p class="article__headline">@Model.Headline</p>
+
+    <dl class="definition">
+        <dt>Author</dt>
+        <dd>@(Model.CreatedBy?.AccountName ?? "—")</dd>
+        <dt>Created</dt>
+        <dd class="mono">@Model.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt>Modified</dt>
+        <dd class="mono">@(Model.ModifiedDate?.ToString("dd/MM/yyyy HH:mm") ?? "Never")</dd>
+        <dt>Source</dt>
+        <dd>@(string.IsNullOrWhiteSpace(Model.NewsSource) ? "Not stated" : Model.NewsSource)</dd>
+        <dt>Status</dt>
+        <dd><partial name="_StatusBadge" model="Model.NewsStatus" /></dd>
+        <dt>Tags</dt>
+        <dd>
+            @if (Model.Tags.Any())
+            {
+                <ul class="chip-list">
+                    @foreach (var t in Model.Tags)
+                    {
+                        <li class="chip">@t.TagName</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span class="subtle">None</span>
+            }
+        </dd>
+    </dl>
+
+    <hr />
+    <div class="news-content">@Model.NewsContent</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

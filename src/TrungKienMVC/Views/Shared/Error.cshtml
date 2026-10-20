@@ -1,0 +1,20 @@
+@{
+    ViewData["Title"] = "Something went wrong";
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Error</span>
+        <h1 class="page-head__title">Something went wrong</h1>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="panel__body">
+        <p>The request could not be completed. Try again — if it keeps failing, give this reference to the administrator.</p>
+        @if (ViewBag.RequestId is string requestId)
+        {
+            <p class="mono muted">Request ID: @requestId</p>
+        }
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Back to home</a>
+    </div>
+</div>

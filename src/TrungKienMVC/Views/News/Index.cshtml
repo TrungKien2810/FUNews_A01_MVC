@@ -1,0 +1,140 @@
+@model NewsIndexViewModel
+@{
+    ViewData["Title"] = "News";
+    var lead = Model.Articles.FirstOrDefault();
+    var rest = Model.Articles.Skip(1).ToList();
+    var isFiltered = !string.IsNullOrWhiteSpace(Model.Keyword) || Model.CategoryId.HasValue || Model.TagId.HasValue;
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Published</span>
+        <h1 class="page-head__title">News</h1>
+        <p class="page-head__meta">
+            Active articles from every category.
+            @Model.Articles.Count @(Model.Articles.Count == 1 ? "story" : "stories")@(isFiltered ? " match this filter" : " on the board").
+        </p>
+    </div>
+</div>
+
+<form method="get" class="filters" role="search">
+    <span class="kicker filters__legend">Filter the board</span>
+    <div class="filters__grid">
+        <div class="filters__field filters__field--wide">
+            <label class="field__label" for="news-keyword">Search</label>
+            <input id="news-keyword" type="search" name="keyword" value="@Model.Keyword"
+                   class="form-control" placeholder="Title, headline or content" />
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="news-category">Category</label>
+            <select id="news-category" name="categoryId" class="form-select">
+                <option value="">All categories</option>
+                @foreach (var c in Model.Categories)
+                {
+                    <option value="@c.CategoryId" selected="@(Model.CategoryId == c.CategoryId)">@c.CategoryName</option>
+                }
+            </select>
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="news-tag">Tag</label>
+            <select id="news-tag" name="tagId" class="form-select">
+                <option value="">All tags</option>
+                @foreach (var t in Model.Tags)
+                {
+                    <option value="@t.TagId" selected="@(Model.TagId == t.TagId)">@t.TagName</option>
+                }
+            </select>
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (isFiltered)
+            {
+                <a asp-action="Index" class="btn btn-secondary">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
+@if (lead is null)
+{
+    <div class="panel">
+        <div class="empty">
+            <div class="empty__mark" aria-hidden="true"></div>
+            <h2 class="empty__title">
+                @(isFiltered ? "Nothing matches that filter" : "No news is published yet")
+            </h2>
+            <p class="empty__body">
+                @(isFiltered
+                    ? "No active article matches this keyword, category and tag together. Widen the filter, or clear it to see everything on the board."
+                    : "Articles appear on this board as soon as a staff member publishes them as active. There is nothing to read yet — check back later.")
+            </p>
+            @if (isFiltered)
+            {
+                <div class="empty__actions">
+                    <a class="btn btn-secondary" asp-action="Index">Clear the filter</a>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <ul class="stories">
+        <li class="story story--lead">
+            <div class="story__kicker">
+                <span>@(lead.Category?.CategoryName ?? "Uncategorised")</span>
+                <span aria-hidden="true">&middot;</span>
+                <time datetime="@lead.CreatedDate?.ToString("yyyy-MM-dd")">@lead.CreatedDate?.ToString("dd MMM yyyy")</time>
+            </div>
+            <h2 class="story__title">
+                <a asp-action="Details" asp-route-id="@lead.NewsArticleId">@lead.NewsTitle</a>
+            </h2>
+            @if (!string.Equals(lead.Headline?.Trim(), lead.NewsTitle?.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                <p class="story__headline">@lead.Headline</p>
+            }
+            <div class="story__foot">
+                <span class="story__meta">@(lead.CreatedBy?.AccountName ?? "Unknown author")</span>
+                @if (lead.Tags.Any())
+                {
+                    <ul class="chip-list">
+                        @foreach (var t in lead.Tags)
+                        {
+                            <li class="chip">@t.TagName</li>
+                        }
+                    </ul>
+                }
+                <a class="link-more" asp-action="Details" asp-route-id="@lead.NewsArticleId">Read the full story</a>
+            </div>
+        </li>
+
+        @foreach (var n in rest)
+        {
+            <li class="story">
+                <div class="story__kicker">
+                    <span>@(n.Category?.CategoryName ?? "Uncategorised")</span>
+                    <span aria-hidden="true">&middot;</span>
+                    <time datetime="@n.CreatedDate?.ToString("yyyy-MM-dd")">@n.CreatedDate?.ToString("dd MMM yyyy")</time>
+                </div>
+                <h2 class="story__title">
+                    <a asp-action="Details" asp-route-id="@n.NewsArticleId">@n.NewsTitle</a>
+                </h2>
+                @if (!string.Equals(n.Headline?.Trim(), n.NewsTitle?.Trim(), StringComparison.OrdinalIgnoreCase))
+                {
+                    <p class="story__headline text-truncate-2">@n.Headline</p>
+                }
+                <div class="story__foot">
+                    <span class="story__meta">@(n.CreatedBy?.AccountName ?? "Unknown author")</span>
+                    @if (n.Tags.Any())
+                    {
+                        <ul class="chip-list">
+                            @foreach (var t in n.Tags)
+                            {
+                                <li class="chip">@t.TagName</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+}

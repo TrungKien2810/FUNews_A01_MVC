@@ -1,0 +1,36 @@
+@model DeleteAccountViewModel
+<form asp-action="Delete" asp-route-id="@Model.Account.AccountId" method="post" data-ajax-form>
+    <partial name="_ModalHeader" model="@("Delete account")" />
+    <div class="modal-body">
+        <div class="alert alert-danger d-none ajax-error" role="alert" tabindex="-1"></div>
+
+        @if (Model.CanDelete)
+        {
+            <p>Deleting removes the account permanently. This cannot be undone.</p>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                <span>This account has already filed news articles, so it cannot be deleted. Reassign or delete those articles first.</span>
+            </div>
+        }
+
+        <dl class="definition">
+            <dt>ID</dt>
+            <dd class="mono">@Model.Account.AccountId</dd>
+            <dt>Name</dt>
+            <dd>@Model.Account.AccountName</dd>
+            <dt>Email</dt>
+            <dd class="mono">@Model.Account.AccountEmail</dd>
+            <dt>Role</dt>
+            <dd>@AccountRoles.GetRoleName(Model.Account.AccountRole)</dd>
+        </dl>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        @if (Model.CanDelete)
+        {
+            <button type="submit" class="btn btn-danger">Delete account</button>
+        }
+    </div>
+</form>

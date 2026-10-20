@@ -1,0 +1,99 @@
+@*
+    Shared ledger of news articles — used by the news desk and by My news history.
+    The parent view sets ViewData["IsFiltered"], ["EmptyTitle"], ["EmptyBody"].
+*@
+@model List<NewsArticle>
+@{
+    var isFiltered = ViewData["IsFiltered"] as bool? ?? false;
+    var emptyTitle = ViewData["EmptyTitle"] as string ?? "No articles yet";
+    var emptyBody = ViewData["EmptyBody"] as string ?? "Articles are listed here once they exist.";
+}
+
+@if (Model.Count == 0)
+{
+    <div class="panel">
+        <div class="empty">
+            <div class="empty__mark" aria-hidden="true"></div>
+            <h2 class="empty__title">@(isFiltered ? "Nothing matches that filter" : emptyTitle)</h2>
+            <p class="empty__body">
+                @(isFiltered
+                    ? "No article matches this keyword, category, tag and status together. Widen the filter above, or reset it to see everything."
+                    : emptyBody)
+            </p>
+            @if (!isFiltered)
+            {
+                <div class="empty__actions">
+                    <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create", "NewsArticles")">New article</button>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel">
+        <div class="ledger__scroll">
+            <table class="ledger">
+                <caption>@Model.Count article@(Model.Count == 1 ? "" : "s"), newest first</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Tags</th>
+                        <th scope="col">Created</th>
+                        <th scope="col">Author</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="is-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var n in Model)
+                    {
+                        var headlineAddsNothing = string.Equals(
+                            n.Headline?.Trim(), n.NewsTitle?.Trim(), StringComparison.OrdinalIgnoreCase);
+                        <tr>
+                            <td class="ledger__id">@n.NewsArticleId</td>
+                            <td>
+                                <span class="ledger__title">@n.NewsTitle</span>
+                                @if (!headlineAddsNothing)
+                                {
+                                    <span class="ledger__sub text-truncate-2">@n.Headline</span>
+                                }
+                            </td>
+                            <td class="is-tight">@(n.Category?.CategoryName ?? "—")</td>
+                            <td>
+                                @if (n.Tags.Any())
+                                {
+                                    <ul class="chip-list">
+                                        @foreach (var t in n.Tags)
+                                        {
+                                            <li class="chip">@t.TagName</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="subtle">&mdash;</span>
+                                }
+                            </td>
+                            <td class="ledger__date">@n.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                            <td class="is-tight">@(n.CreatedBy?.AccountName ?? "—")</td>
+                            <td class="is-tight"><partial name="_StatusBadge" model="n.NewsStatus" /></td>
+                            <td>
+                                <div class="ledger__actions">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                                            data-modal-url="@Url.Action("Details", "NewsArticles", new { id = n.NewsArticleId })">View</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                            data-modal-url="@Url.Action("Edit", "NewsArticles", new { id = n.NewsArticleId })">Edit</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            data-modal-url="@Url.Action("Delete", "NewsArticles", new { id = n.NewsArticleId })">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

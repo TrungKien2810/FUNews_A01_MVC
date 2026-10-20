@@ -1,0 +1,13 @@
+@*
+    Publication state. The dot is filled or hollow and the label is always spelled out,
+    so the state never depends on colour alone.
+*@
+@model bool?
+@if (Model == true)
+{
+    <span class="status status--on">Active</span>
+}
+else
+{
+    <span class="status status--off">Inactive</span>
+}

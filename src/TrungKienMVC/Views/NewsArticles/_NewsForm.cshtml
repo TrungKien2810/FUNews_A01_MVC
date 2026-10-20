@@ -1,0 +1,77 @@
+@model NewsFormViewModel
+@{
+    var tags = ViewBag.Tags as List<Tag> ?? new List<Tag>();
+}
+<form asp-action="@(Model.IsEdit ? "Edit" : "Create")" method="post" data-ajax-form novalidate>
+    <partial name="_ModalHeader" model="@(Model.IsEdit ? "Edit article" : "New article")" />
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="hidden" asp-for="NewsArticleId" />
+
+        <div class="field">
+            <label asp-for="NewsTitle" class="field__label">@Html.DisplayNameFor(m => m.NewsTitle)<span class="req" aria-hidden="true"> *</span></label>
+            <input asp-for="NewsTitle" class="form-control" required maxlength="400" />
+            <span asp-validation-for="NewsTitle" class="field-validation-error"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="Headline" class="field__label">@Html.DisplayNameFor(m => m.Headline)<span class="req" aria-hidden="true"> *</span></label>
+            <input asp-for="Headline" class="form-control" required maxlength="150" />
+            <span asp-validation-for="Headline" class="field-validation-error"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="NewsContent" class="field__label">@Html.DisplayNameFor(m => m.NewsContent)<span class="req" aria-hidden="true"> *</span></label>
+            <textarea asp-for="NewsContent" class="form-control" rows="6" required></textarea>
+            <span class="field__hint">Plain text — line breaks are kept when the article is displayed.</span>
+            <span asp-validation-for="NewsContent" class="field-validation-error"></span>
+        </div>
+
+        <div class="field__row">
+            <div class="field">
+                <label asp-for="NewsSource" class="field__label"></label>
+                <input asp-for="NewsSource" class="form-control" maxlength="400" />
+                <span asp-validation-for="NewsSource" class="field-validation-error"></span>
+            </div>
+            <div class="field">
+                <label asp-for="CategoryId" class="field__label">@Html.DisplayNameFor(m => m.CategoryId)<span class="req" aria-hidden="true"> *</span></label>
+                <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-select" required>
+                    <option value="">Select a category</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="field-validation-error"></span>
+            </div>
+        </div>
+
+        <div class="field">
+            <span class="field__label" id="tags-label">Tags</span>
+            @if (tags.Count == 0)
+            {
+                <div class="tag-grid tag-grid--empty">No tags exist in the database yet.</div>
+            }
+            else
+            {
+                <div class="tag-grid" role="group" aria-labelledby="tags-label">
+                    @foreach (var t in tags)
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="SelectedTagIds" value="@t.TagId"
+                                   id="tag_@t.TagId" checked="@Model.SelectedTagIds.Contains(t.TagId)" />
+                            <label class="form-check-label" for="tag_@t.TagId">@t.TagName</label>
+                        </div>
+                    }
+                </div>
+                <span class="field__hint">@tags.Count available. An article may carry none of them.</span>
+            }
+        </div>
+
+        <div class="field form-check form-switch">
+            <input asp-for="NewsStatus" class="form-check-input" role="switch" />
+            <label asp-for="NewsStatus" class="form-check-label"></label>
+            <span class="field__hint">Inactive articles are hidden from lecturers and from the public board.</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">@(Model.IsEdit ? "Save changes" : "Create article")</button>
+    </div>
+</form>

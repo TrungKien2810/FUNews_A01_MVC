@@ -1,0 +1,38 @@
+@model NewsIndexViewModel
+@{
+    ViewData["Title"] = "My news history";
+    ViewData["IsFiltered"] = !string.IsNullOrWhiteSpace(Model.Keyword);
+    ViewData["EmptyTitle"] = "You have not filed anything yet";
+    ViewData["EmptyBody"] = "Every article you create is listed here, newest first, so you can find your own work without searching the whole desk.";
+    var isFiltered = (bool)ViewData["IsFiltered"]!;
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Staff</span>
+        <h1 class="page-head__title">My news history</h1>
+        <p class="page-head__meta">Articles created by @User.Identity?.Name, newest first.</p>
+    </div>
+    <div class="page-head__actions">
+        <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New article</button>
+    </div>
+</div>
+
+<form method="get" class="filters" role="search">
+    <span class="kicker filters__legend">Filter my articles</span>
+    <div class="filters__grid">
+        <div class="filters__field filters__field--wide">
+            <label class="field__label" for="history-keyword">Search</label>
+            <input id="history-keyword" type="search" name="keyword" value="@Model.Keyword" class="form-control"
+                   placeholder="Title, headline, content or source" />
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (isFiltered)
+            {
+                <a asp-action="History" class="btn btn-secondary">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
+<partial name="_NewsTable" model="Model.Articles" />

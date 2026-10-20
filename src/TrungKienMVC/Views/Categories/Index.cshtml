@@ -1,0 +1,104 @@
+@model CategoryIndexViewModel
+@{
+    ViewData["Title"] = "Categories";
+    var isFiltered = !string.IsNullOrWhiteSpace(Model.Keyword) || Model.IsActive.HasValue;
+}
+<div class="page-head">
+    <div class="page-head__text">
+        <span class="kicker">Staff</span>
+        <h1 class="page-head__title">Categories</h1>
+        <p class="page-head__meta">Every article belongs to exactly one category. A category that is still in use cannot be deleted.</p>
+    </div>
+    <div class="page-head__actions">
+        <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New category</button>
+    </div>
+</div>
+
+<form method="get" class="filters" role="search">
+    <span class="kicker filters__legend">Filter categories</span>
+    <div class="filters__grid">
+        <div class="filters__field filters__field--wide">
+            <label class="field__label" for="cat-keyword">Search</label>
+            <input id="cat-keyword" type="search" name="keyword" value="@Model.Keyword" class="form-control"
+                   placeholder="Name or description" />
+        </div>
+        <div class="filters__field">
+            <label class="field__label" for="cat-status">Status</label>
+            <select id="cat-status" name="isActive" class="form-select">
+                <option value="">All statuses</option>
+                <option value="true" selected="@(Model.IsActive == true)">Active</option>
+                <option value="false" selected="@(Model.IsActive == false)">Inactive</option>
+            </select>
+        </div>
+        <div class="filters__actions">
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (isFiltered)
+            {
+                <a asp-action="Index" class="btn btn-secondary">Reset</a>
+            }
+        </div>
+    </div>
+</form>
+
+@if (Model.Categories.Count == 0)
+{
+    <div class="panel">
+        <div class="empty">
+            <div class="empty__mark" aria-hidden="true"></div>
+            <h2 class="empty__title">@(isFiltered ? "Nothing matches that filter" : "No categories yet")</h2>
+            <p class="empty__body">
+                @(isFiltered
+                    ? "No category matches this name and status together. Widen the filter above, or reset it to see them all."
+                    : "Categories group the news. Create the first one before filing any article — every article must belong to one.")
+            </p>
+            @if (!isFiltered)
+            {
+                <div class="empty__actions">
+                    <button type="button" class="btn btn-primary" data-modal-url="@Url.Action("Create")">New category</button>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel">
+        <div class="ledger__scroll">
+            <table class="ledger">
+                <caption>@Model.Categories.Count categor@(Model.Categories.Count == 1 ? "y" : "ies")</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Parent</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="is-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.Categories)
+                    {
+                        <tr>
+                            <td class="ledger__id">@c.CategoryId</td>
+                            <td><span class="ledger__title">@c.CategoryName</span></td>
+                            <td>
+                                <span class="ledger__sub text-truncate-2">@c.CategoryDesciption</span>
+                            </td>
+                            <td>@(c.ParentCategoryId == c.CategoryId || c.ParentCategory is null ? "—" : c.ParentCategory.CategoryName)</td>
+                            <td><partial name="_StatusBadge" model="c.IsActive" /></td>
+                            <td>
+                                <div class="ledger__actions">
+                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                            data-modal-url="@Url.Action("Edit", new { id = c.CategoryId })">Edit</button>
+                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                            data-modal-url="@Url.Action("Delete", new { id = c.CategoryId })">Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

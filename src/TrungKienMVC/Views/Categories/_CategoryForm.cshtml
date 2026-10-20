@@ -1,0 +1,38 @@
+@model CategoryFormViewModel
+<form asp-action="@(Model.IsEdit ? "Edit" : "Create")" method="post" data-ajax-form novalidate>
+    <partial name="_ModalHeader" model="@(Model.IsEdit ? "Edit category" : "New category")" />
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly"></div>
+        <input type="hidden" asp-for="CategoryId" />
+
+        <div class="field">
+            <label asp-for="CategoryName" class="field__label">@Html.DisplayNameFor(m => m.CategoryName)<span class="req" aria-hidden="true"> *</span></label>
+            <input asp-for="CategoryName" class="form-control" required maxlength="100" />
+            <span asp-validation-for="CategoryName" class="field-validation-error"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="CategoryDesciption" class="field__label">@Html.DisplayNameFor(m => m.CategoryDesciption)<span class="req" aria-hidden="true"> *</span></label>
+            <textarea asp-for="CategoryDesciption" class="form-control" rows="3" required maxlength="250"></textarea>
+            <span asp-validation-for="CategoryDesciption" class="field-validation-error"></span>
+        </div>
+
+        <div class="field">
+            <label asp-for="ParentCategoryId" class="field__label"></label>
+            <select asp-for="ParentCategoryId" asp-items="ViewBag.ParentCategories" class="form-select">
+                <option value="">No parent — this is a top-level category</option>
+            </select>
+            <span asp-validation-for="ParentCategoryId" class="field-validation-error"></span>
+        </div>
+
+        <div class="field form-check form-switch">
+            <input asp-for="IsActive" class="form-check-input" role="switch" />
+            <label asp-for="IsActive" class="form-check-label"></label>
+            <span class="field__hint">Inactive categories keep their articles but are not offered for new ones.</span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">@(Model.IsEdit ? "Save changes" : "Create category")</button>
+    </div>
+</form>
