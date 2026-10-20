@@ -81,6 +81,18 @@ main {
 }
 
 /* --- 3. typography -------------------------------------------------------- */
+/* Bootstrap paints <code> pink (#d63384), which measures 4.2:1 on our panel surface —
+   below AA at body size, and the request id in the error page is the only place it
+   appears. A record id is a monospaced value, not a highlight. */
+code {
+  padding: 0 0.25em;
+  border-radius: var(--radius-control);
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+}
+
 h1,
 h2,
 h3,

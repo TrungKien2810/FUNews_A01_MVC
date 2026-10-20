@@ -1,0 +1,29 @@
+@{
+    var code = ViewBag.StatusCode as int? ?? 404;
+    var title = code switch
+    {
+        403 => "That page is not yours to open",
+        404 => "We could not find that page",
+        410 => "That page is gone",
+        >= 500 => "Something went wrong on our side",
+        _ => "That request did not work"
+    };
+    var body = code switch
+    {
+        403 => "Your account is signed in, but this part of the newsroom is for a different role. If you think that is wrong, ask an administrator.",
+        404 => "The address may have a typo, or the article was deleted after it was linked. The newsroom board is the best place to pick the trail back up.",
+        >= 500 => "The error has been logged. Try again in a moment; if it keeps happening, quote the request id below.",
+        _ => "The server declined that request. Go back, or start from the newsroom board."
+    };
+    ViewData["Title"] = $"{code}";
+}
+<div class="panel panel--narrow error-page">
+    <p class="kicker">Error @code</p>
+    <h1 class="page-head__title">@title</h1>
+    <p class="page-head__meta">@body</p>
+    <div class="cluster">
+        <a class="btn btn-primary" asp-controller="News" asp-action="Index">Go to the newsroom</a>
+        <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">My start page</a>
+    </div>
+    <p class="muted small">Request id: <code>@ViewBag.RequestId</code></p>
+</div>

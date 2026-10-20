@@ -21,4 +21,17 @@ public class HomeController : Controller
         ViewBag.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
         return View();
     }
+
+    /// <summary>
+    /// Re-executed for 4xx/5xx responses that have no body of their own, so a mistyped
+    /// address, a deleted article or a forbidden page still lands on something that says
+    /// what happened and offers a way back.
+    /// </summary>
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult ErrorPage(int code = 404)
+    {
+        ViewBag.StatusCode = code;
+        ViewBag.RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+        return View("StatusCode");
+    }
 }
