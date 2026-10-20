@@ -32,7 +32,16 @@ public class ReportController : Controller
 
         if (ModelState.IsValid)
         {
-            model.Report = _newsService.GetReport(model.StartDate!.Value, model.EndDate!.Value);
+            var start = model.StartDate!.Value.Date;
+            var end = model.EndDate!.Value.Date;
+            model.Report = _newsService.GetReport(start, end);
+
+            // Same-length window immediately before this one, so the total can be read
+            // against what "normal" looked like for the period before.
+            var length = (end - start).Days + 1;
+            var previousEnd = start.AddDays(-1);
+            var previousStart = previousEnd.AddDays(-(length - 1));
+            model.PreviousPeriodTotal = _newsService.CountNewsArticlesByPeriod(previousStart, previousEnd);
         }
         return View(model);
     }

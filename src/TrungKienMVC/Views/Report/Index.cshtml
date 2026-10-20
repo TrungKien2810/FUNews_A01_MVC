@@ -41,6 +41,13 @@
             <span class="stat__note">
                 @report.StartDate.ToString("dd MMM yyyy") &rarr; @report.EndDate.ToString("dd MMM yyyy")
             </span>
+            @if (Model.Trend is int trend)
+            {
+                <span class="stat__trend @(trend > 0 ? "stat__trend--up" : trend < 0 ? "stat__trend--down" : "")">
+                    @(trend > 0 ? "▲" : trend < 0 ? "▼" : "■")
+                    @(trend == 0 ? "Same as the previous period" : $"{Math.Abs(trend)} {(Math.Abs(trend) == 1 ? "story" : "stories")} {(trend > 0 ? "more" : "fewer")} than the period before")
+                </span>
+            }
         </div>
         <div class="stat stat--on">
             <span class="stat__label">Active</span>
@@ -100,12 +107,12 @@
                         @foreach (var n in report.Articles)
                         {
                             <tr>
-                                <td class="ledger__id">@(i++)</td>
-                                <td class="ledger__date">@n.CreatedDate?.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td><span class="ledger__title">@n.NewsTitle</span></td>
-                                <td>@(n.Category?.CategoryName ?? "—")</td>
-                                <td>@(n.CreatedBy?.AccountName ?? "—")</td>
-                                <td><partial name="_StatusBadge" model="n.NewsStatus" /></td>
+                                <td class="ledger__id" data-label="No.">@(i++)</td>
+                                <td class="ledger__date" data-label="Created">@n.CreatedDate?.ToString("dd MMM yyyy HH:mm")</td>
+                                <td class="ledger__cell" data-label="Title"><span class="ledger__title">@n.NewsTitle</span></td>
+                                <td data-label="Category">@(n.Category?.CategoryName ?? "—")</td>
+                                <td data-label="Author">@(n.CreatedBy?.AccountName ?? "—")</td>
+                                <td data-label="Status"><partial name="_StatusBadge" model="n.NewsStatus" /></td>
                             </tr>
                         }
                     </tbody>

@@ -30,10 +30,12 @@ public class NewsArticleService : INewsArticleService
         return _newsArticleRepository.GetRelatedArticles(article.NewsArticleId, article.CategoryId, tagIds, take);
     }
 
+    public int CountNewsArticlesByPeriod(DateTime startDate, DateTime endDate)
+        => _newsArticleRepository.CountNewsArticlesByPeriod(startDate, endDate);
+
     public NewsReport GetReport(DateTime startDate, DateTime endDate)
     {
         var articles = _newsArticleRepository.GetNewsArticlesByPeriod(startDate, endDate);
-
         static List<NewsStatistic> Group(IEnumerable<NewsArticle> source, Func<NewsArticle, string> key) =>
             source.GroupBy(key)
                 .Select(g => new NewsStatistic

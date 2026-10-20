@@ -82,6 +82,19 @@ public class NewsArticleDAO
     }
 
     /// <summary>
+    /// How many articles were created in [startDate, endDate] (whole days). Counted in the
+    /// database: the report asks for it only to compare two periods, and loading both
+    /// article lists just to count them would be waste.
+    /// </summary>
+    public int CountNewsArticlesByPeriod(DateTime startDate, DateTime endDate)
+    {
+        using var db = new FUNewsManagementContext();
+        var from = startDate.Date;
+        var to = endDate.Date.AddDays(1);
+        return db.NewsArticles.Count(n => n.CreatedDate >= from && n.CreatedDate < to);
+    }
+
+    /// <summary>
     /// Active stories that share this article's category or one of its tags, best match
     /// first: more shared tags, then newest. Drives the "More from this section" block.
     /// </summary>

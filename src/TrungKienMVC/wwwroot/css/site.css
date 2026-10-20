@@ -1909,6 +1909,23 @@ textarea.form-control {
   font-size: var(--text-display);
 }
 
+/* The trend line reads as a sentence, not a badge: a bare "▲ 2" makes the reader decode
+   the arrow before they learn what it is comparing against. */
+.stat__trend {
+  display: block;
+  margin-top: var(--space-8);
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.stat__trend--up {
+  color: var(--success-text);
+}
+
+.stat__trend--down {
+  color: var(--danger-text);
+}
+
 .stat--on .stat__value {
   color: var(--success-text);
 }
