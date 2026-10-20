@@ -28,11 +28,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light dark" />
     <title>@(string.IsNullOrEmpty(pageTitle) ? "FUNews — Newsroom desk" : $"{pageTitle} · FUNews")</title>
+    @{
+        // Every public page carries its own summary; the desk pages all describe themselves
+        // the same way, since they are behind a login and never meant to be shared.
+        var description = ViewData["Description"] as string
+            ?? "FUNews is the campus newsroom: stories from every department, published as they happen.";
+        var canonical = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    }
+    <meta name="description" content="@description" />
+    <link rel="canonical" href="@canonical" />
+    <meta property="og:site_name" content="FUNews" />
+    <meta property="og:type" content="@(ViewData["OgType"] as string ?? "website")" />
+    <meta property="og:title" content="@(string.IsNullOrEmpty(pageTitle) ? "FUNews — Newsroom desk" : pageTitle)" />
+    <meta property="og:description" content="@description" />
+    <meta property="og:url" content="@canonical" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="alternate" type="application/rss+xml" title="FUNews — latest stories" href="~/feed.rss" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/tokens.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body>
+<body id="top">
     <a class="skip-link" href="#main">Skip to main content</a>
 
     <header class="masthead">
@@ -122,7 +138,11 @@
     <footer class="site-foot">
         <div class="wrap site-foot__inner">
             <span>&copy; @DateTime.Now.Year FUNewsManagementSystem</span>
-            <span class="site-foot__meta">ASP.NET Core MVC · Service → Repository → DAO</span>
+            <span class="site-foot__meta">
+                <a asp-controller="Feed" asp-action="Index">RSS feed</a>
+                <span aria-hidden="true">·</span>
+                <span>Campus newsroom</span>
+            </span>
         </div>
     </footer>
 

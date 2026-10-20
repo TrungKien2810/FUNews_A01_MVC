@@ -82,6 +82,11 @@ browser stops painting native controls against a background we never chose.
 
 Checked by running the app against a real `FUNewsManagement` database on SQL Server:
 
+- **Public newsroom, checked in an automated browser pass:** the news list, an article
+  page and the popup flows render at 375 / 768 / 1440 px and in both themes with no
+  horizontal overflow, no console errors and no squeezed block. An axe-core scan of the
+  news list and an article page reports **no violations** and no focusable element
+  without a visible focus indicator (36 and 15 focusable elements respectively).
 - **Responsive layout** at 375 / 768 / 1440 px in both themes — no horizontal page
   overflow. The news, category and account ledgers are wide by nature and scroll inside
   their own container; `min-width: 64rem` is what makes them scroll rather than crush.
@@ -92,6 +97,8 @@ Checked by running the app against a real `FUNewsManagement` database on SQL Ser
 - **Popup scrolling:** all 12 popups at 1000×720, 1440×900, 390×700 and 1200×480 — the
   body scrolls internally, the header and the submit button never leave the viewport, and
   the overlay behind never has to scroll.
+- **Feeds and metadata:** `/feed.rss` answers `application/rss+xml` with the active
+  stories; every public page carries a description, canonical URL and Open Graph tags.
 - **Coarse pointer:** every control reaches 44px under `@media (pointer: coarse)`; under a
   mouse the dense sizes stay, which is what a desk-bound console wants.
 

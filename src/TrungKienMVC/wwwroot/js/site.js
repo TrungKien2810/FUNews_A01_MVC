@@ -189,3 +189,38 @@
             });
     });
 })(jQuery);
+
+/* Copy link
+   ---------------------------------------------------------------------------
+   The article's "Copy link" button. Progressive enhancement: without JS the
+   button is inert but harmless, and the URL is still in the address bar. The
+   result is announced through the article's live region, not only by changing
+   the label, so a screen reader hears that something happened. */
+(function () {
+    const button = document.querySelector('[data-copy-link]');
+    if (!button) return;
+
+    const status = document.querySelector('[data-copy-status]');
+    const original = button.textContent;
+
+    function announce(message) {
+        if (status) status.textContent = message;
+    }
+
+    button.addEventListener('click', async function () {
+        try {
+            await navigator.clipboard.writeText(window.location.href);
+            button.textContent = 'Link copied';
+            announce('Link copied to the clipboard.');
+        } catch {
+            announce('Copying is blocked in this browser. The address bar has the link.');
+            button.textContent = original;
+            return;
+        }
+        window.setTimeout(function () {
+            button.textContent = original;
+            announce('');
+        }, 2000);
+    });
+})();
+

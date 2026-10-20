@@ -620,6 +620,18 @@ b {
   white-space: nowrap;
 }
 
+/* A chip that filters the board keeps the shape but has to read as something to press. */
+a.chip {
+  text-decoration: none;
+}
+
+a.chip:hover,
+a.chip:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+}
+
 .status {
   display: inline-flex;
   align-items: center;
@@ -1449,7 +1461,14 @@ textarea.form-control {
 }
 
 /* --- 15. article ---------------------------------------------------------- */
+/*
+   A printed page, not a dashboard panel: the card is held to a reading column and
+   centred, so the eye travels down one measure instead of across 1400px of empty
+   surface. 48rem is the card; the prose inside is held to --measure (66ch).
+*/
 .article {
+  max-width: 48rem;
+  margin-inline: auto;
   padding: var(--space-32);
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1481,6 +1500,7 @@ textarea.form-control {
 .article__meta {
   display: flex;
   flex-wrap: wrap;
+  align-items: baseline;
   gap: var(--space-4) var(--space-16);
   margin-bottom: var(--space-24);
   padding-block: var(--space-8);
@@ -1489,6 +1509,32 @@ textarea.form-control {
   font-size: var(--text-xs);
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
+}
+
+.article__byline {
+  color: var(--text);
+}
+
+/* Same box as the metadata around it, but it is a button: no chrome until hovered. */
+.link-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.link-action:hover {
+  color: var(--accent-hover);
+}
+
+/* Pushed to the end of the metadata line on a wide screen; it wraps under it when
+   there is no room, which is the honest thing for a secondary action. */
+.article__share {
+  margin-left: auto;
 }
 
 .news-content {
@@ -1515,7 +1561,8 @@ textarea.form-control {
   flex-wrap: wrap;
   gap: var(--space-4) var(--space-8);
   list-style: none;
-  margin: 0 0 var(--space-16);
+  max-width: 48rem;
+  margin: 0 auto var(--space-16);
   padding: 0;
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-label);
@@ -1529,7 +1576,60 @@ textarea.form-control {
   color: var(--border-strong);
 }
 
-/* --- 16. statistics ------------------------------------------------------- */
+/* --- 16. related stories -------------------------------------------------- */
+/*
+   Reads as the next page of the same section, not a card strip: same column, ruled
+   rows, and one link out to the whole category for the reader who wants more than
+   the three the editor chose.
+*/
+.related {
+  max-width: 48rem;
+  margin: var(--space-32) auto 0;
+  padding-top: var(--space-24);
+  border-top: 1px solid var(--border-strong);
+}
+
+.related__title {
+  margin: 0 0 var(--space-8);
+  font-size: var(--text-title);
+  letter-spacing: var(--tracking-title);
+}
+
+.related__list {
+  display: grid;
+  gap: 0;
+  list-style: none;
+  margin: 0 0 var(--space-16);
+  padding: 0;
+}
+
+.related__item {
+  padding-block: var(--space-12);
+  border-bottom: 1px solid var(--border);
+}
+
+.related__link {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: var(--leading-title);
+  text-decoration: none;
+}
+
+.related__link:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.related__meta {
+  margin: var(--space-4) 0 0;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- 17. statistics ------------------------------------------------------- */
 .stats {
   display: grid;
   gap: var(--space-16);
@@ -1797,8 +1897,19 @@ textarea.form-control {
 }
 
 .site-foot__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+}
+
+.site-foot__meta a {
+  color: var(--text-muted);
+}
+
+.site-foot__meta a:hover {
+  color: var(--accent);
 }
 
 /* --- 20. coarse pointers -------------------------------------------------- */
@@ -1837,12 +1948,21 @@ textarea.form-control {
   .filters,
   .page-head__actions,
   .ledger__actions,
+  .article__share,
+  .article__foot,
+  .related,
   .skip-link {
     display: none;
   }
 
   body {
     background: #fff;
+  }
+
+  .article {
+    max-width: none;
+    border: 0;
+    padding: 0;
   }
 
   .panel,

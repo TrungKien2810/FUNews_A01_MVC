@@ -8,6 +8,8 @@ public interface INewsArticleService
     List<NewsArticle> GetActiveNewsArticles(string? keyword, short? categoryId, int? tagId = null);
     List<NewsArticle> GetNewsHistory(short createdById, string? keyword = null);
     NewsArticle? GetNewsArticleById(string id);
+    /// <summary>Stories to read next: same category or shared tags, best match first.</summary>
+    List<NewsArticle> GetRelatedArticles(NewsArticle article, int take);
     NewsReport GetReport(DateTime startDate, DateTime endDate);
     void AddNewsArticle(NewsArticle article, IEnumerable<int> tagIds);
     void UpdateNewsArticle(NewsArticle article, IEnumerable<int> tagIds);

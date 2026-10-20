@@ -41,6 +41,11 @@ public class NewsController : Controller
         {
             return NotFound();
         }
-        return View(article);
+
+        return View(new NewsDetailViewModel
+        {
+            Article = article,
+            Related = _newsService.GetRelatedArticles(article, 3)
+        });
     }
 }

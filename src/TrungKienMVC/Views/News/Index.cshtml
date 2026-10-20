@@ -1,6 +1,8 @@
 @model NewsIndexViewModel
+@using TrungKienMVC.Infrastructure
 @{
     ViewData["Title"] = "News";
+    ViewData["Description"] = "Every story published by the campus newsroom, newest first.";
     var lead = Model.Articles.FirstOrDefault();
     var rest = Model.Articles.Skip(1).ToList();
     var isFiltered = !string.IsNullOrWhiteSpace(Model.Keyword) || Model.CategoryId.HasValue || Model.TagId.HasValue;
@@ -93,13 +95,13 @@ else
                 <p class="story__headline">@lead.Headline</p>
             }
             <div class="story__foot">
-                <span class="story__meta">@(lead.CreatedBy?.AccountName ?? "Unknown author")</span>
+                <span class="story__meta">@(lead.CreatedBy?.AccountName ?? "Unknown author") · @ReadTime.Minutes(lead.NewsContent) min read</span>
                 @if (lead.Tags.Any())
                 {
                     <ul class="chip-list">
                         @foreach (var t in lead.Tags)
                         {
-                            <li class="chip">@t.TagName</li>
+                            <li><a class="chip" asp-action="Index" asp-route-tagId="@t.TagId">@t.TagName</a></li>
                         }
                     </ul>
                 }
@@ -123,13 +125,13 @@ else
                     <p class="story__headline text-truncate-2">@n.Headline</p>
                 }
                 <div class="story__foot">
-                    <span class="story__meta">@(n.CreatedBy?.AccountName ?? "Unknown author")</span>
+                    <span class="story__meta">@(n.CreatedBy?.AccountName ?? "Unknown author") · @ReadTime.Minutes(n.NewsContent) min read</span>
                     @if (n.Tags.Any())
                     {
                         <ul class="chip-list">
                             @foreach (var t in n.Tags)
                             {
-                                <li class="chip">@t.TagName</li>
+                                <li><a class="chip" asp-action="Index" asp-route-tagId="@t.TagId">@t.TagName</a></li>
                             }
                         </ul>
                     }

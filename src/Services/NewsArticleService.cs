@@ -23,6 +23,13 @@ public class NewsArticleService : INewsArticleService
 
     public NewsArticle? GetNewsArticleById(string id) => _newsArticleRepository.GetNewsArticleById(id);
 
+    public List<NewsArticle> GetRelatedArticles(NewsArticle article, int take)
+    {
+        if (take <= 0) return new List<NewsArticle>();
+        var tagIds = article.Tags.Select(t => t.TagId).ToList();
+        return _newsArticleRepository.GetRelatedArticles(article.NewsArticleId, article.CategoryId, tagIds, take);
+    }
+
     public NewsReport GetReport(DateTime startDate, DateTime endDate)
     {
         var articles = _newsArticleRepository.GetNewsArticlesByPeriod(startDate, endDate);
