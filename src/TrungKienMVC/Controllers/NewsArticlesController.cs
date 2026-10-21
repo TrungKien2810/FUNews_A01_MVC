@@ -101,6 +101,7 @@ public class NewsArticlesController : Controller
     {
         var article = _newsService.GetNewsArticleById(id);
         if (article == null) return NotFound();
+        if (!IsOwner(article)) return Forbid();
         LoadFormData(article.CategoryId);
         return PartialView("_NewsForm", new NewsFormViewModel
         {
@@ -121,6 +122,7 @@ public class NewsArticlesController : Controller
     {
         var article = string.IsNullOrEmpty(model.NewsArticleId) ? null : _newsService.GetNewsArticleById(model.NewsArticleId);
         if (article == null) return NotFound();
+        if (!IsOwner(article)) return Forbid();
 
         ValidateCategory(model, article.CategoryId);
         if (!ModelState.IsValid)
@@ -148,6 +150,7 @@ public class NewsArticlesController : Controller
     {
         var article = _newsService.GetNewsArticleById(id);
         if (article == null) return NotFound();
+        if (!IsOwner(article)) return Forbid();
         return PartialView("_DeleteNews", article);
     }
 
@@ -157,6 +160,7 @@ public class NewsArticlesController : Controller
     {
         var article = _newsService.GetNewsArticleById(id);
         if (article == null) return NotFound();
+        if (!IsOwner(article)) return Forbid();
         _newsService.DeleteNewsArticle(id);
         TempData["Success"] = $"News \"{article.NewsTitle}\" was deleted.";
         return Json(new { success = true });
@@ -176,6 +180,14 @@ public class NewsArticlesController : Controller
             ModelState.AddModelError(nameof(model.CategoryId), "Category is inactive.");
         }
     }
+
+    /// <summary>
+    /// A staff account manages the articles it wrote. "View news history created by him/her"
+    /// only makes sense if authorship is the unit of ownership, and a newsroom where any
+    /// staff member can silently rewrite another's story is a data-integrity bug, not a
+    /// permission shortcut. Enforced here, not only by hiding the buttons in the ledger.
+    /// </summary>
+    private bool IsOwner(NewsArticle article) => article.CreatedById == User.GetAccountId();
 
     private void LoadFormData(short? currentCategoryId)
     {

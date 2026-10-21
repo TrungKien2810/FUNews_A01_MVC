@@ -372,13 +372,27 @@ b {
   gap: var(--space-8);
   margin-left: auto;
   padding: var(--space-8) var(--space-12);
+  min-height: 40px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--text);
   font-size: var(--text-sm);
   font-weight: 600;
+  line-height: 1.2;
   cursor: pointer;
+  transition: background-color var(--dur-feedback) ease-out,
+              border-color var(--dur-feedback) ease-out;
+}
+
+.nav-toggle:hover {
+  background: var(--surface-sunken);
+  border-color: var(--text-muted);
+}
+
+.nav-toggle[aria-expanded="true"] {
+  background: var(--surface-sunken);
+  border-color: var(--text);
 }
 
 .nav-toggle__bars {
@@ -395,6 +409,13 @@ b {
 
   html.js .masthead__nav {
     display: none;
+  }
+
+  /* The button and the user block both carried `margin-left: auto`, so the free
+     space was split between them and the button sat in the middle of the bar with
+     nothing anchoring it. One auto margin, on the button, groups the two at the right. */
+  html.js .masthead__user {
+    margin-left: var(--space-8);
   }
 
   html.js .masthead__nav[data-nav-open="true"] {
@@ -538,30 +559,41 @@ b {
 
 /* --- 7. the ledger table -------------------------------------------------- */
 /*
-   min-width inside a real scroll container. It has to exceed the widest container the
-   table can be crushed into, not merely the narrowest phone: with 44rem the 768px case
-   still had 718px of room, so the table shrank into it and broke one word per line
-   instead of scrolling. 64rem is roughly the width eight real columns need.
+   Eight real columns need about 52rem. That is the min-width, and it only works because
+   the table sits inside a real scroll container: below the width where 52rem fits the
+   media query further down turns each row into a stack of labelled records, so the
+   scroll container is never the thing a reader has to reach for.
 */
 .ledger__scroll {
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
 
-/* Below 768px a ledger becomes a stack of records. An eight-column table that scrolls
+/* Below 944px a ledger becomes a stack of records. An eight-column table that scrolls
    sideways hides the Actions column off-screen — so the one thing a staff member needs
    on a phone, "edit this article", is the thing they cannot reach. Each cell carries its
-   own label instead, and the actions take a full row of their own. */
-@media (max-width: 47.99rem) {
+   own label instead, and the actions take a full row of their own.
+   The stack starts where the columns actually fit: their content needs 878px and the
+   shell adds 50px, so the old 768px boundary left a band where the table overflowed and
+   the page scrolled sideways with the first column cut off. */
+@media (max-width: 58.99rem) {
   .ledger__scroll {
     overflow-x: visible;
   }
 
-  /* Two classes so this beats the `.ledger { min-width: 64rem }` rule further down
+  /* Two classes so this beats the `.ledger { min-width: 52rem }` rule further down
      the file without resorting to !important. */
   .ledger__scroll > .ledger {
     display: block;
     min-width: 0;
+  }
+
+  /* Once the table is a block, its caption keeps `display: table-caption` and shrinks to
+     fit the words, which stacked "7 articles, newest first" one word per line. */
+  .ledger__scroll > .ledger caption {
+    display: block;
+    width: 100%;
+    padding-inline: 0;
   }
 
   .ledger thead {
@@ -647,11 +679,17 @@ b {
   .ledger td.ledger__cell--actions .btn {
     flex: 1 1 auto;
   }
+
+  /* Someone else's article has one button and a "Read only" label, so the shared
+     grow rule would stretch that single button across the whole row. */
+  .ledger td.ledger__cell--actions .ledger__actions:has(.ledger__readonly) .btn {
+    flex: 0 0 auto;
+  }
 }
 
 .ledger {
   width: 100%;
-  min-width: 64rem;
+  min-width: 52rem;
   border-collapse: collapse;
   font-size: var(--text-sm);
   color: var(--text);
@@ -739,6 +777,19 @@ b {
   align-items: center;
   justify-content: flex-end;
   gap: var(--space-4);
+}
+
+/* Someone else's article: readable, not editable. The label takes the place of the
+   two buttons so the actions column does not collapse on those rows. */
+.ledger__readonly {
+  font-size: var(--text-xs);
+  /* --text-subtle lands at 4.19:1 on the panel at this size; the label has to clear
+     4.5:1 like any other text, so it uses the muted step instead. */
+  color: var(--text-muted);
+  white-space: nowrap;
+  /* The actions row is right-aligned with a 4px gap; the label needs to stand apart
+     from the View button it follows. */
+  margin-left: var(--space-4);
 }
 
 /* Short enumerable values: letting them wrap turns "Academic news" into two lines

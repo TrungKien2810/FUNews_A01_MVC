@@ -7,6 +7,7 @@
     var isFiltered = ViewData["IsFiltered"] as bool? ?? false;
     var emptyTitle = ViewData["EmptyTitle"] as string ?? "No articles yet";
     var emptyBody = ViewData["EmptyBody"] as string ?? "Articles are listed here once they exist.";
+    var myAccountId = User.GetAccountId();
 }
 
 @if (Model.Count == 0)
@@ -84,10 +85,17 @@ else
                                 <div class="ledger__actions">
                                     <button type="button" class="btn btn-outline-secondary btn-sm"
                                             data-modal-url="@Url.Action("Details", "NewsArticles", new { id = n.NewsArticleId })">View</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm"
-                                            data-modal-url="@Url.Action("Edit", "NewsArticles", new { id = n.NewsArticleId })">Edit</button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm"
-                                            data-modal-url="@Url.Action("Delete", "NewsArticles", new { id = n.NewsArticleId })">Delete</button>
+                                    @if (n.CreatedById == myAccountId)
+                                    {
+                                        <button type="button" class="btn btn-outline-primary btn-sm"
+                                                data-modal-url="@Url.Action("Edit", "NewsArticles", new { id = n.NewsArticleId })">Edit</button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm"
+                                                data-modal-url="@Url.Action("Delete", "NewsArticles", new { id = n.NewsArticleId })">Delete</button>
+                                    }
+                                    else
+                                    {
+                                        <span class="ledger__readonly">Read only</span>
+                                    }
                                 </div>
                             </td>
                         </tr>
