@@ -40,6 +40,14 @@ Flow: `Controller -> Service -> Repository -> DAO -> DbContext`.
 | Staff (role 1) | IsabellaDavid@FUNewsManagement.org | @1 |
 | Lecturer (role 2) | EmmaWilliam@FUNewsManagement.org | @1 |
 
+**Why any Staff account can edit any article.** The requirement gives Staff
+"Manage news article (includes tags)" with Read / Create / Update / Delete / Search, and ties
+authorship only to a separate feature: "View news history created by him/her"
+(`/NewsArticles/History`, which does filter by the signed-in author). Management is therefore not
+scoped per author, and the provided seed data assumes the same thing — all five seeded articles are
+written by Lecturer accounts, so scoping management to "own articles" would leave a Staff login with
+nothing it may edit.
+
 ## Features
 
 - **Anonymous / Lecturer**: view and search active news articles (by keyword, category, tag) and read details.
